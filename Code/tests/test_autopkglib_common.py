@@ -24,13 +24,15 @@ autopkg = imp.load_source(
 )
 
 
-class TestAutoPkg(unittest.TestCase):
-    """Test class for AutoPkglib itself."""
+class TestCommon(unittest.TestCase):
+    """Test class for common"""
 
     def setUp(self):
-        # This forces autopkglib to accept our patching of memoize
-        imp.reload(autopkglib)
-        autopkglib.globalPreferences
+        ## TODO - when we do leverage globalPreferences, it gets imported with
+        # from autopkglib.prefs import Preferences
+        ## and then
+        # globalPreferences = Preferences() as per https://github.com/autopkg/autopkg/blob/f2c9b5beb42052fe9f291c5bba7a0381642c36cf/Code/autopkglib/__init__.py#L95C1-L95C34
+        pass
 
     def tearDown(self):
         pass
@@ -76,3 +78,12 @@ class TestAutoPkg(unittest.TestCase):
         mock_sys.platform = "Win32-somethingsomething"
         result = autopkglib.common.is_linux()
         self.assertEqual(result, False)
+
+    def test_get_autopkg_version(self):
+        """Asserts get_autopkg_version() returns a version in the expected format.
+           Allows 2.0, 2.0.1, but not 2.0. or other funky-formatted versions.
+           (Confirmed there's never been another style by hitting the 'history' button
+           while viewing blame for Code/autopkglib/version.plist's Version value)
+        """
+        result = autopkglib.common.get_autopkg_version()
+        self.assertRegex(result, r'\d+\.\d+(\.\d+)?')

@@ -159,8 +159,6 @@ class TestAutoPkg(unittest.TestCase):
     }
 
     def setUp(self):
-        # This forces autopkglib to accept our patching of memoize
-        imp.reload(autopkglib)
         autopkglib.prefs.globalPreferences
         self.mock_recipemap = patch.object(
             autopkglib, "globalRecipeMap", self.recipe_file_struct
